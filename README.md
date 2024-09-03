@@ -1,12 +1,12 @@
-#Download
-- BTC:
+# Download
+BTC:
 + keyframes
 + media-info
-- Mail group (aic2024batch01@gmail.com | AIC2024@gmail.com)
+Mail group (aic2024batch01@gmail.com | AIC2024@gmail.com)
 + clip-features
 + index.ivf
 
-#Usage
+# Usage
 1. Cài đặt Docker
 2. Cài đặt qdrant qua image của docker
 ```
