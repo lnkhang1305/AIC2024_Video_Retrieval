@@ -2,7 +2,7 @@
 1. BTC:
 + keyframes
 + media-info  
-2. Mail group (aic2024batch01@gmail.com | AIC2024@gmail.com)
+2. Mail group (aic2024batch01@gmail.com | AIC2024@gmail.com) 
 + clip-features
 + index.ivf
 + qdrant_storage
