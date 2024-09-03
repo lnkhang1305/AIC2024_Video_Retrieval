@@ -1,28 +1,46 @@
-import open_clip
+import clip
 import torch
+import faiss
 from qdrant_client import QdrantClient
 import matplotlib.pyplot as plt
+import numpy as np
 from PIL import Image
 
 
 client = QdrantClient(url="http://localhost:6333")
 
 
-model, _, _ = open_clip.create_model_and_transforms('ViT-B-32', pretrained='laion2b_s34b_b79k')
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(device)
+model, preprocess = clip.load("ViT-B/16", device=device)
+index = faiss.read_index('index.ivf')
 
 
 def search_images_with_text(query_text):
-    with torch.no_grad():
-        text_vector = model.encode_text(open_clip.tokenize([query_text])).cpu().numpy().flatten()
-    
-    search_results = client.search(
-        collection_name="image_collection",
-        query_vector=text_vector,
-        limit=5  
-    )
+    # with torch.no_grad():
+    #     text_vector = model.encode_text(open_clip.tokenize([query_text])).cpu().numpy().flatten()
+    text_inputs = clip.tokenize(query_text).to(device)
+    with torch.no_grad(), torch.cuda.amp.autocast():
+        text_vector = model.encode_text(text_inputs)
+    text_vector /= text_vector.norm(dim=-1, keepdim=True)
+
+    # search_results = client.search(
+    #     collection_name="image_collection",
+    #     query_vector=text_vector,
+    #     limit=5
+    # )
+    text_vector_np = text_vector.cpu().numpy().astype(np.float32)
+    k = 5  # Số lượng kết quả trả về
+    distances, indices = index.search(text_vector_np, k=k)
+
+    result_ids = [int(idx) for idx in indices[0]]
+    results = client.retrieve(
+        collection_name='image_collection', ids=result_ids)
+
     top_5_images = []
-    for result in search_results:
-        print(f"ID: {result.id}, Image Path: {result.payload['image_path']}, Score: {result.score}")
+    for result in results:
+        print(
+            f"ID: {result.id}, Path: {result.payload['image_path']},Video : {result.payload['video']},Frame_index: {result.payload['frame_idx']}, Distance: {distances[0][result_ids.index(result.id)]}")
         top_5_images.append(result)
 
     _, axs = plt.subplots(2, 3, figsize=(10, 7))
@@ -33,4 +51,5 @@ def search_images_with_text(query_text):
 
     plt.show()
 
-search_images_with_text("two men are shaking hand and there are two women stading next to them")
+
+search_images_with_text("A man in black vest")
