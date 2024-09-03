@@ -1,10 +1,11 @@
 # Download
-BTC:
+1. BTC:
 + keyframes
 + media-info  
-Mail group (aic2024batch01@gmail.com | AIC2024@gmail.com)
+2. Mail group (aic2024batch01@gmail.com | AIC2024@gmail.com)
 + clip-features
 + index.ivf
++ qdrant_storage
 
 # Usage
 1. Cài đặt Docker
