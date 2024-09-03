@@ -1,7 +1,7 @@
 # Download
 BTC:
 + keyframes
-+ media-info
++ media-info  
 Mail group (aic2024batch01@gmail.com | AIC2024@gmail.com)
 + clip-features
 + index.ivf
