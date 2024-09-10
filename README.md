@@ -18,3 +18,13 @@ docker pull qdrant/qdrant
 docker run -p 6333:6333 -v direct_path_to_qdrant_storage:/qdrant/storage qdrant/qdrant
 ```
 4. Chạy file search.py 
+
+## Chạy web
+1. Chạy command để cài đặt các thư viện cần thiết
+```
+pip install - r requirements.txt
+```
+2. Chạy command để chạy flask
+```
+python web.py
+```
