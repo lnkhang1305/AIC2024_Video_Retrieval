@@ -9,12 +9,12 @@ import io
 import base64
 import json
 from deep_translator import GoogleTranslator
-
+import re
 
 def init_model():
     device = "cpu"
     # print(device)
-    model, preprocess = clip.load(r"D:\AI_chalenge_2024\AI_Challenge\model\ViT-B-16.pt", device=device)
+    model, preprocess = clip.load(r"ViT-B/16", device=device)
     index = faiss.read_index('index.ivf')
     client = QdrantClient(url="http://localhost:6333")
     return model, index, client
@@ -43,14 +43,15 @@ def search_images_with_text(query_text, device, model, index, client):
 
     top_5_images = []
     for result in results:
-        print(
-            f"ID: {result.id}, Path: {result.payload['image_path']},Video : {result.payload['video']},Frame_index: {result.payload['frame_idx']}, Distance: {distances[0][result_ids.index(result.id)]}")
+        # print(
+        #     f"ID: {result.id}, Path: {result.payload['image_path']},Video : {result.payload['video']},Frame_index: {result.payload['frame_idx']}, Distance: {distances[0][result_ids.index(result.id)]}")
         top_5_images.append(result)
 
     _, axs = plt.subplots(2, 3, figsize=(10, 7))
     for i, ax in enumerate(axs.flat[:-1]):
         path = top_5_images[i].payload['image_path']
-        path = path.replace("./keyframes/Keyframes_"+top_5_images[i].payload['video'], "D:\AI_chalenge_2024\AI_Challenge\db\\videos\\Keyframes_"+top_5_images[i].payload['video']+"\\keyframes")
+        # print(path)
+        path = path.replace("./keyframes/Keyframes_"+top_5_images[i].payload['video'], "D:\\Python\\AIC_2024\\pipeline_test\\keyframes\\Keyframes_"+top_5_images[i].payload['video']+"\\keyframes")
         ax.imshow(Image.open(path))
         ax.set_title(f'ID: {top_5_images[i].id}')
         ax.axis('off')
@@ -73,17 +74,40 @@ def search_images_from_query(query_text, k, model, index, client):
     results = client.retrieve(
         collection_name='image_collection', ids=result_ids)
     return_result = []
+    
+
     for result in results:
+        result.payload['image_path'] = result.payload['image_path'].replace("./keyframes/Keyframes_"+ result.payload['video'] , "D:\\Python\\AIC_2024\\pipeline_test\\keyframes\\Keyframes_" + result.payload['video'] + "\\keyframes")
+        print(result.payload['image_path'])
         img = Image.open(result.payload['image_path'])
         img.save(buffered, format="JPEG")
         data = {}
         data['ID'] = result.id
-        data['Image'] = base64.b64encode(buffered.getvalue()).decode("utf-8")
-        data['Video'] = result.payload['video']
+        with open(result.payload['image_path'], "rb") as f:
+            data['Image'] = base64.b64encode(f.read()).decode("utf-8")
+        pattern = r'L\d{2}_V\d{3}'
+        data['Video'] = re.search(pattern, result.payload['image_path']).group()
         data['Frame_id'] = result.payload['frame_idx']
-        print(data)
+        # print(data)
         return_result.append(json.dumps(data))
+
     return return_result
 
 
 # search_images_with_text(translate_to_EN("Một con thuyền chạy được trên băng, màu đen. Con thuyền này chạy bằng động cơ cánh quạt ở bên trên thổi hướng ra phía sau. Con thuyền là phương tiện hỗ trợ cứu hộ một nạn nhân bị rơi xuống hồ băng."))
+
+# def to_csv(str, total_result, filepath):
+#     model, index, client = init_model()
+#     with open(filepath, mode='w') as csv_file:
+#         csv_data = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+#         retrieval_data = search_images_from_query(str, total_result, model, index, client)
+#         # print(retrieval_data)
+#         for data_json in retrieval_data:
+#             data = json.loads(data_json)
+#             # print(json.loads(data)['ID'])
+#             csv_data.writerow([data['ID'], data['Video'], data['Frame_id']])
+
+# query_text = "Trận bóng đá giữa đội Uzbekistan và đội Triều Tiên. Một đội trong trang phục toàn trắng và đội còn lại trong trang phục toàn xanh dương. Đây là thời điểm đội Triều Tiên được hưởng quả phạt đền 11 mét. Hỏi lúc thực hiện quả phạt đền có bao nhiêu cầu thủ Uzbekistan đang ở trong khung hình?"
+# k=1
+# file_path = "submission.csv"
+# to_csv(translate_to_EN(query_text), k, file_path)

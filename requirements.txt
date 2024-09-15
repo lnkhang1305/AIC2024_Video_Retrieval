@@ -1,6 +1,6 @@
 clip==0.2.0
 deep_translator==1.11.4
-faiss==1.5.3
+faiss-cpu
 Flask==3.0.3
 matplotlib==3.9.2
 numpy==2.1.1

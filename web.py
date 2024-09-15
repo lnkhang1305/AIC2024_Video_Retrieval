@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, Response
 from search import search_images_from_query, translate_to_EN, init_model
 import json
-
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
