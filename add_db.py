@@ -13,6 +13,7 @@ def add_to_db(clip_files, scene_frames, index_files):
         index_frames = pd.read_csv(index_file, usecols=['frame_idx'])
         for i, frame_path in enumerate(sorted(os.listdir(scene_frame))):
             index.add(embeddings[i].reshape(1, -1))
+            print(scene_frame+'/'+frame_path)
             client.upsert(
                 collection_name="image_collection",
                 points=[
@@ -35,20 +36,33 @@ client.recreate_collection(
     vectors_config=VectorParams(size=512, distance=Distance.COSINE)
 )
 
-clip_path = './clip_features'
+clip_path = r"D:\AI_chalenge_2024\AI_Challenge\db\CLIP_Features-20240908T102303Z-001\CLIP_Features"
 clip_files = []
 for video_path in sorted(os.listdir(clip_path)):
     for clip in sorted(os.listdir(clip_path+'/'+video_path)):
         clip_files.append(clip_path+'/'+video_path+'/'+clip)
 
 scene_frames = []
-frame_path = './keyframes'
-for video_frame in sorted(os.listdir(frame_path)):
-    for scene_frame in sorted(os.listdir(frame_path+'/'+video_frame)):
-        scene_frames.append(frame_path+'/'+video_frame+'/'+scene_frame)
+frame_path = [r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L01",
+              r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L02",
+              r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L03",
+              r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L04",
+              r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L05",
+              r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L06",
+              r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L07",
+              r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L08",
+              r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L09",
+              r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L10",
+              r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L11",
+              r"D:\AI_chalenge_2024\AI_Challenge\db\videos\Keyframes_L12"
+              ]
+for kf in frame_path:
+    for video_frame in sorted(os.listdir(kf)):
+        for scene_frame in sorted(os.listdir(kf+'/'+video_frame)):
+            scene_frames.append(kf+'/'+video_frame+'/'+scene_frame)
 
 index_files = []
-index_path = './map-keyframes'
+index_path = r"D:\AI_chalenge_2024\AI_Challenge\db\map-keyframes-b1\map-keyframes"
 for index_file in sorted(os.listdir(index_path)):
     index_files.append(index_path+'/'+index_file)
 

@@ -30,7 +30,7 @@ client.create_collection(
 
 model, _, transform = open_clip.create_model_and_transforms('ViT-B-32', pretrained='laion2b_s34b_b79k')
 id = 1
-image_path = "C:\Users\Acer\Desktop\pipeline_test\L02_CLIP_Features\content\L02_CLIP_Features"
+image_path = r"C:\Users\Acer\Desktop\pipeline_test\L02_CLIP_Features\content\L02_CLIP_Features"
 for part in sorted(os.listdir(image_path)):
   for image_file in sorted(os.listdir(part)):
     path = image_path+'/'+part+'/'+image_file
