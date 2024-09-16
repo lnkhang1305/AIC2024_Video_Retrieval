@@ -2,6 +2,38 @@
     <head>
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+        <style>
+          .overlay {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0, 0.9);
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+  color: white;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay a {font-size: 20px}
+  .overlay .closebtn {
+  font-size: 40px;
+  top: 15px;
+  right: 35px;
+  }
+}
+        </style>
     </head>
     <body>
         <!--header-->
@@ -57,13 +89,64 @@
                   </div>
 
                   <!--Display query-->
-                  <div id="display_result" class="lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg min-h-[32rem] max-h-screen h-fit overflow-y-scroll overflow-x-hidden p-10 flex-row items-end justify-start relative">
+                  <ul id="display_result" class="connected-sortable droppable-area1 lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg min-h-[32rem] max-h-screen h-fit overflow-y-scroll overflow-x-hidden p-10 flex-row items-end justify-start relative">
+
+                    <li class="draggable-item">
+                      <div draggable="true" class="result mb-8 flex lg:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
+                      <img draggable="false" alt="team" 
+                      class="w-3/4 flex-shrink-0 rounded-lg max-w-128 max-h-72 object-cover object-center sm:mb-0 mb-4" 
+                      src="https://dummyimage.com/1280x720"
+                      onclick="openNav('1yHly8dYhIQ')">
+                      <div draggable="false" class="flex-grow sm:pl-8 sm:w-full w-1/4">
+                        <h2 class="title-font font-medium text-gray-900 mb-3">1</h2>
+                        <h3 class="title-font font-medium text-gray-600 mb-3">Frame ID: ${element.Frame_id}</h3>
+                        <h3 class="title-font font-medium text-gray-600 mb-3">Kết quả Q&A : ${element.qa}</h3>          
+                      </div>
+                      </div>
+                    </li>
+
+                    <li class="draggable-item">
+                      <div draggable="true" class="result mb-8 flex lg:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
+                      <img draggable="false" alt="team" 
+                      class="w-3/4 flex-shrink-0 rounded-lg max-w-128 max-h-72 object-cover object-center sm:mb-0 mb-4" 
+                      src="https://dummyimage.com/1280x720"
+                      onclick="openNav('2Z3pxUVnyx8')">
+                      <div draggable="false" class="flex-grow sm:pl-8 sm:w-full w-1/4">
+                        <h2 class="title-font font-medium text-gray-900 mb-3">2</h2>
+                        <h3 class="title-font font-medium text-gray-600 mb-3">Frame ID: ${element.Frame_id}</h3>
+                        <h3 class="title-font font-medium text-gray-600 mb-3">Kết quả Q&A : ${element.qa}</h3>          
+                      </div>
+                      </div>
+                    </li>
+
+                    <li class="draggable-item">
+                      <div draggable="true" class="result mb-8 flex lg:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
+                      <img draggable="false" alt="team" 
+                      class="w-3/4 flex-shrink-0 rounded-lg max-w-128 max-h-72 object-cover object-center sm:mb-0 mb-4" 
+                      src="https://dummyimage.com/1280x720"
+                      onclick="openNav('2Z3pxUVnyx8')">
+                      <div draggable="false" class="flex-grow sm:pl-8 sm:w-full w-1/4">
+                        <h2 class="title-font font-medium text-gray-900 mb-3">3</h2>
+                        <h3 class="title-font font-medium text-gray-600 mb-3">Frame ID: ${element.Frame_id}</h3>
+                        <h3 class="title-font font-medium text-gray-600 mb-3">Kết quả Q&A : ${element.qa}</h3>          
+                      </div>
+                      </div>
+                    </li>
 
                   </div>
 
-                </div>
+                </ul>
+                <button id="abc" onclick="download_csv()">toCSV</button>
               </section>
           </main>
+          <div id="myNav" class="overlay">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="w-full h-full flex justify-center items-center">
+              <div class="w-3/5 h-3/5 flex justify-center">
+                <iframe id="youtube_video" class="aspect-video" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
 
     </body>
     <script>
@@ -71,17 +154,33 @@
           document.getElementById("retrieval_result_quantity").value = value;
           document.getElementById("quantity-range").value = value;
         }
+        function openNav(youtube_id) {
+          $('#youtube_video').attr("src", "https://www.youtube.com/embed/"+youtube_id)
+          $("#myNav").css('width' , "100%");
+          $('body').css('overflow-y', 'hidden');
+        }
+
+        function closeNav() {
+          $('#youtube_video').attr("src","")
+          $("#myNav").css('width' , "0%");
+          $('body').css('overflow-y', 'scroll');
+        }
     </script>
+    <script src="{{url_for('static', filename='js/to_csv.js')}}"></script>
     <script>
       function data_retrieval(){
         let query = $('#query_data').val();
         let k = $('#retrieval_result_quantity').val()
         // console.log(query, k)
-      $.ajax({
+        $.ajax({
                 type : 'POST',
                 url : "/video_retrieval",
                 data: {"query":query, 'k': k},
                 success: function(data, textStatus, jqXHR){
+                  console.log(data)
+                  localStorage.setItem("retrieval_data", JSON.stringify(data));
+                  console.log(localStorage.getItem("retrieval_data"))
+                  $('#display_result').empty();
                     data.forEach(ele => {
                       element = JSON.parse(ele)
                       console.log(element)
@@ -101,4 +200,20 @@
                 });
               }
     </script>
+    <script>
+      function download_csv(){
+        exportJSONToCSV(JSON.parse(localStorage.getItem("retrieval_data")))
+        console.log(JSON.parse(localStorage.getItem("retrieval_data")))
+      }
+    </script>
+    <script>
+      $( init );
+function init() {
+  $( ".droppable-area1" ).sortable({
+      connectWith: ".connected-sortable",
+      stack: '.connected-sortable ul'
+    }).disableSelection();
+}
+    </script>
+
 </html>
