@@ -27,12 +27,12 @@ def add_to_db(clip_files, scene_frames, index_files):
     faiss.write_index(index, "index.ivf")
 
 
-dimension = 512
+dimension = 768
 index = faiss.IndexFlatIP(dimension)
 client = QdrantClient(url="http://localhost:6333")
 client.recreate_collection(
     collection_name='image_collection',
-    vectors_config=VectorParams(size=512, distance=Distance.COSINE)
+    vectors_config=VectorParams(size=768, distance=Distance.COSINE)
 )
 
 clip_path = './clip_features'

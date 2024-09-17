@@ -162,6 +162,7 @@ cython_debug/
 #.idea/
 CLIPv2_features/
 CLIP_features/
+CLIP_L14@336PX/
 keyframes
 media-info
 map-keyframes
