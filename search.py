@@ -10,11 +10,15 @@ import base64
 import json
 from deep_translator import GoogleTranslator
 
+# ADJUST PARAMETER AND MODEL--------------#
+CLIP_MODEL = "ViT-L/14@336px" # ViT-B/16  #
+COLLECTION_NAME = "image_collection"      #
+# ----------------------------------------#
 
 def init_model():
     device = "cpu"
     # print(device)
-    model, preprocess = clip.load(r"D:\AI_chalenge_2024\AI_Challenge\model\ViT-B-16.pt", device=device)
+    model, preprocess = clip.load(CLIP_MODEL, device=device)
     index = faiss.read_index('index.ivf')
     client = QdrantClient(url="http://localhost:6333")
     return model, index, client
@@ -71,7 +75,7 @@ def search_images_from_query(query_text, k, model, index, client):
     distances, indices = index.search(text_vector_np, k=int(k))
     result_ids = [int(idx) for idx in indices[0]]
     results = client.retrieve(
-        collection_name='image_collection', ids=result_ids)
+        collection_name=COLLECTION_NAME, ids=result_ids)
     return_result = []
     for result in results:
         img = Image.open(result.payload['image_path'])

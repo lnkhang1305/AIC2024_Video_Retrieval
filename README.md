@@ -7,6 +7,32 @@
 + index.ivf
 + qdrant_storage
 
+# Tổ chức thư mục
+|-- static/
+|
+|-- templates/
+|
+|-- CLIP_L14@336PX/
+|-- |-- L01/
+|-- |-- |-- V0xx.npy
+|-- |-- |-- ...
+|
+|-- Clip_features/ (Tương tự) <B16>
+|
+|-- Clipv2_features/ (Tương tự) <L14>
+|
+|-- map-keyframe/
+|-- |-- Lxx_Vxxx.csv
+|
+|-- key_frames/
+|
+|-- keyframes/
+|-- |-- Keyframes_Lxx/
+|-- |-- |-- L01_V0xx/
+|-- |-- |-- |-- xxx.jpg 
+
+
+
 # Usage
 1. Cài đặt Docker
 2. Cài đặt qdrant qua image của docker
