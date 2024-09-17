@@ -91,7 +91,7 @@ def search_images_from_query(query_text, k, model, index, client):
         data = {}
         data['ID'] = result.id
         data['Video_info'] = re.search(pattern, result.payload['image_path']).group()
-        with open(os.path.join(path_to_media_info_folder, data['Video_info'], ".json"), 'r', encoding='utf-8') as media_json_file:
+        with open(os.path.join(path_to_media_info_folder, data['Video_info']+".json"), 'r', encoding='utf-8') as media_json_file:
             data['Youtube_id'] = get_youtube_video_id_by_url(json.load(media_json_file)['watch_url'])
         with open(result.payload['image_path'], "rb") as image_file:
             data['Image'] = base64.b64encode(image_file.read()).decode("utf-8")
