@@ -32,7 +32,7 @@ def add_to_db(clip_files, scene_frames, index_files):
     faiss.write_index(index, "index.ivf")
 
 
-dimension = 512
+dimension = 768
 index = faiss.IndexFlatIP(dimension)
 client = QdrantClient(url="http://localhost:6333")
 client.recreate_collection(
@@ -59,7 +59,7 @@ for kf in frame_path:
             scene_frames.append(os.path.join(kf, video_frame, scene_frame))
 
 index_files = []
-index_path = r"map-keyframe" if os.path.exists(r"map-keyframe") else r"D:\AI_chalenge_2024\AI_Challenge\db\map-keyframes-b1\map-keyframes"
+index_path = r"map-keyframes" if os.path.exists(r"map-keyframes") else r"D:\AI_chalenge_2024\AI_Challenge\db\map-keyframes-b1\map-keyframes"
 for index_file in sorted(os.listdir(index_path)):
     index_files.append(os.path.join(index_path, index_file))
 

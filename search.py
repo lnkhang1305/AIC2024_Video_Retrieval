@@ -16,7 +16,7 @@ import re
 def init_model():
     device = "cpu"
     # print(device)
-    model, preprocess = clip.load(r"D:\AI_chalenge_2024\AI_Challenge\model\ViT-B-16.pt", device=device)
+    model, preprocess = clip.load(r"ViT-L/14@336px", device=device)
     index = faiss.read_index('index.ivf')
     client = QdrantClient(url="http://localhost:6333")
     return model, index, client
@@ -75,7 +75,7 @@ def get_youtube_video_id_by_url(url):
         return ""
 
 def search_images_from_query(query_text, k, model, index, client):
-    path_to_media_info_folder = r"D:\AI_chalenge_2024\AI_Challenge\db\media-info-b1\media-info"
+    path_to_media_info_folder = r"media-info-b1\media-info" # FIXING
     text_inputs = clip.tokenize(query_text, truncate=True).to("cpu")
     with torch.no_grad(), torch.cuda.amp.autocast():
         text_vector = model.encode_text(text_inputs)
