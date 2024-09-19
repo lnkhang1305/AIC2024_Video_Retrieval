@@ -9,31 +9,24 @@
 
 # Tổ chức thư mục
 ```
-|-- static/
+|-- static/ 
 |
 |-- templates/
 |
-|-- CLIP_L14@336PX/
-|-- |-- L01/
-|-- |-- |-- V0xx.npy
-|-- |-- |-- ...
-|
-|-- Clip_features/ (Tương tự) <B16>
-|
-|-- Clipv2_features/ (Tương tự) <L14>
-|
-|-- map-keyframe/
-|-- |-- Lxx_Vxxx.csv
-|
-|-- key_frames/
-|
-|-- keyframes/
-|-- |-- Keyframes_Lxx/
-|-- |-- |-- L01_V0xx/
-|-- |-- |-- |-- xxx.jpg
+|-- data/
+|-- |-- batch1/
+|-- |-- |-- clip_features_l14
+|-- |-- |-- clip_features_b16
+|-- |-- |-- clip_features_b32
+|-- |-- |-- keyframes
+|-- |-- |-- map_frame
+|-- |-- batch2/
+|-- |-- |-- clip_features_l14
+|-- |-- |-- clip_features_b16
+|-- |-- |-- clip_features_b32
+|-- |-- |-- keyframes
+|-- |-- |-- map_frame
 ```
-
-
 
 # Usage
 1. Cài đặt Docker
