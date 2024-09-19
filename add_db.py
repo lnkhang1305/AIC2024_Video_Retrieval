@@ -30,14 +30,17 @@ def add_to_db(collection_name, clip_files, scene_frames, index_files, idx=0):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', type=str, help='Name of collection')
+    # Ex: ./data/batch_1
     parser.add_argument('-b', type=str, help='Path to folder batch_x')
     parser.add_argument('-c', type=str, help='Choose clip model (b16/b32/l14)')
 
     args = parser.parse_args()
 
     collection_name, batch_path, clip_feature_model = args.n, args.b, args.c
-
-    dimension = 768
+    if clip_feature_model == 'l14':
+        dimension = 768
+    else:
+        dimension = 512
     client = QdrantClient(url="http://localhost:6333")
     if not client.collection_exists(collection_name):
         client.create_collection(
@@ -61,7 +64,7 @@ if __name__ == "__main__":
             scene_frames.append(frame_path+'/'+video_frame+'/'+scene_frame)
 
     index_files = []
-    index_path = batch_path + '/map_frame'
+    index_path = batch_path + '/map_frames'
     for index_file in sorted(os.listdir(index_path)):
         index_files.append(index_path+'/'+index_file)
     # w-write; a-append
