@@ -8,6 +8,7 @@
 + qdrant_storage
 
 # Tổ chức thư mục
+```
 |-- static/
 |
 |-- templates/
@@ -29,7 +30,8 @@
 |-- keyframes/
 |-- |-- Keyframes_Lxx/
 |-- |-- |-- L01_V0xx/
-|-- |-- |-- |-- xxx.jpg 
+|-- |-- |-- |-- xxx.jpg
+```
 
 
 
