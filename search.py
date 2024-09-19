@@ -14,7 +14,7 @@ import re
 def init_model():
     device = "cpu"
     # print(device)
-    model, preprocess = clip.load(r"ViT-B/16", device=device)
+    model, preprocess = clip.load(r"ViT-L/14@336px", device=device)
     index = faiss.read_index('index.ivf')
     client = QdrantClient(url="http://localhost:6333")
     return model, index, client
@@ -51,7 +51,7 @@ def search_images_with_text(query_text, device, model, index, client):
     for i, ax in enumerate(axs.flat[:-1]):
         path = top_5_images[i].payload['image_path']
         # print(path)
-        path = path.replace("./keyframes/Keyframes_"+top_5_images[i].payload['video'], "D:\\Python\\AIC_2024\\pipeline_test\\keyframes\\Keyframes_"+top_5_images[i].payload['video']+"\\keyframes")
+        path = path.replace("./keyframes/Keyframes_"+top_5_images[i].payload['video'], "D:\Python\AIC_2024\pipeline_test\keyframes\Keyframes_"+top_5_images[i].payload['video'])
         ax.imshow(Image.open(path))
         ax.set_title(f'ID: {top_5_images[i].id}')
         ax.axis('off')
@@ -77,9 +77,10 @@ def search_images_from_query(query_text, k, model, index, client):
     
 
     for result in results:
-        result.payload['image_path'] = result.payload['image_path'].replace("./keyframes/Keyframes_"+ result.payload['video'] , "D:\\Python\\AIC_2024\\pipeline_test\\keyframes\\Keyframes_" + result.payload['video'] + "\\keyframes")
+        result.payload['image_path'] = result.payload['image_path'].replace("./keyframes/Keyframes_"+ result.payload['video'] , "D:\Python\AIC_2024\pipeline_test\keyframes\Keyframes_" + result.payload['video'] + "\keyframes")
         print(result.payload['image_path'])
-        img = Image.open(result.payload['image_path'])
+        frame_index = "0" * (3 - len(str(read_index))) + ".jpg"
+        img = Image.open(result.payload['image_path'] + '\' + frame_index)
         img.save(buffered, format="JPEG")
         data = {}
         data['ID'] = result.id

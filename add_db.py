@@ -35,7 +35,7 @@ client.recreate_collection(
     vectors_config=VectorParams(size=768, distance=Distance.COSINE)
 )
 
-clip_path = './clip_features'
+clip_path = './CLIP_L14@336PX'
 clip_files = []
 for video_path in sorted(os.listdir(clip_path)):
     for clip in sorted(os.listdir(clip_path+'/'+video_path)):
