@@ -19,13 +19,13 @@
 |-- |-- |-- clip_features_b16
 |-- |-- |-- clip_features_b32
 |-- |-- |-- keyframes
-|-- |-- |-- map_frame
+|-- |-- |-- map_frames
 |-- |-- batch_2/
 |-- |-- |-- clip_features_l14
 |-- |-- |-- clip_features_b16
 |-- |-- |-- clip_features_b32
 |-- |-- |-- keyframes
-|-- |-- |-- map_frame
+|-- |-- |-- map_frames
 ```
 
 # Usage
