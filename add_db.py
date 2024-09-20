@@ -12,14 +12,16 @@ def add_to_db(collection_name, clip_files, scene_frames, index_files, idx=0):
         embeddings = np.load(clip_file)
         index_frames = pd.read_csv(index_file, usecols=['frame_idx'])
         for i, frame_path in enumerate(sorted(os.listdir(scene_frame))):
+            # print(embeddings[i].shape)
             index.add(embeddings[i].reshape(1, -1))
+            # print(scene_frame+'/'+frame_path)
             client.upsert(
                 collection_name=collection_name,
                 points=[
                     {
                         "id": idx,
                         "vector": embeddings[i].reshape(1, -1).flatten(),
-                        "payload": {"image_path": scene_frame+'/'+frame_path, "video": clip_file.split('/')[5], "frame_idx": int(index_frames.iloc[i])}
+                        "payload": {"image_path": scene_frame+'/'+frame_path, "video": scene_frame.split('/')[-1], "frame_idx": int(index_frames.iloc[i])}
                     }
                 ]
             )
@@ -31,17 +33,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', type=str, help='Name of collection')
     # Ex: ./data/batch_1
-    # New_update: -b ./keyframes
-    parser.add_argument('-b', type=str, help='Path to folder batch_x')
     parser.add_argument('-c', type=str, help='Choose clip model (b16/b32/l14)')
 
     args = parser.parse_args()
 
-    collection_name, batch_path, clip_feature_model = args.n, args.b, args.c
+    collection_name, clip_feature_model = args.n, args.c
     if clip_feature_model == 'l14':
         dimension = 768
     else:
         dimension = 512
+    index = faiss.IndexFlatIP(dimension)
     client = QdrantClient(url="http://localhost:6333")
     if not client.collection_exists(collection_name):
         client.create_collection(
@@ -52,34 +53,25 @@ if __name__ == "__main__":
     else:
         client.get_collection(collection_name)
 
-    clip_path = batch_path + '/clip_features_' + clip_feature_model
+    clip_path = './clip_features_' + clip_feature_model
     clip_files = []
     for video_path in sorted(os.listdir(clip_path)):
         for clip in sorted(os.listdir(clip_path+'/'+video_path)):
             clip_files.append(clip_path+'/'+video_path+'/'+clip)
 
     scene_frames = []
-    frame_path = batch_path + '/keyframes'
+    frame_path = './keyframes/Keyframes'
     for video_frame in sorted(os.listdir(frame_path)):
         for scene_frame in sorted(os.listdir(frame_path+'/'+video_frame)):
             scene_frames.append(frame_path+'/'+video_frame+'/'+scene_frame)
 
     index_files = []
-    index_path = batch_path + '/map_frames'
+    index_path = r"map-keyframes" if os.path.exists(
+        r"map-keyframes") else r"D:\AI_chalenge_2024\AI_Challenge\db\map-keyframes-b1\map-keyframes"
     for index_file in sorted(os.listdir(index_path)):
-        index_files.append(index_path+'/'+index_file)
-    # w-write; a-append
-    mode = input('Mode (w/a):')
-    if mode == 'w':
-        index = faiss.IndexFlatIP(dimension)
-        add_to_db(collection_name=collection_name, clip_files=clip_files, scene_frames=scene_frames,
-                  index_files=index_files)
-    else:
-        index = faiss.read_index('index.ivf')
-        collection_info = client.get_collection(collection_name)
-        num_vectors = collection_info.points_count
-        print(num_vectors)
-        add_to_db(collection_name=collection_name, clip_files=clip_files, scene_frames=scene_frames,
-                  index_files=index_files, idx=num_vectors+1)
-        num_vectors = collection_info.points_count
-        print(num_vectors)
+        index_files.append(os.path.join(index_path, index_file))
+
+    add_to_db(collection_name=collection_name,
+              clip_files=clip_files,
+              scene_frames=scene_frames,
+              index_files=index_files)

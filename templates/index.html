@@ -2,6 +2,38 @@
     <head>
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+        <style>
+          .overlay {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0, 0.9);
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+  color: white;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay a {font-size: 20px}
+  .overlay .closebtn {
+  font-size: 40px;
+  top: 15px;
+  right: 35px;
+  }
+}
+        </style>
     </head>
     <body>
         <!--header-->
@@ -12,16 +44,16 @@
                 <span class="ml-3 text-xl">HCMC AI Challenge 2024</span>
               </a>
               <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
-                <a class="mr-5 hover:text-gray-900">First Link</a>
+                <!-- <a class="mr-5 hover:text-gray-900">First Link</a>
                 <a class="mr-5 hover:text-gray-900">Second Link</a>
                 <a class="mr-5 hover:text-gray-900">Third Link</a>
-                <a class="mr-5 hover:text-gray-900">Fourth Link</a>
+                <a class="mr-5 hover:text-gray-900">Fourth Link</a> -->
               </nav>
-              <button class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Button
+              <a type="button" href="https://codalab.lisn.upsaclay.fr/competitions/20122" class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Đến trang chủ cuộc thi
                 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
                   <path d="M5 12h14M12 5l7 7-7 7"></path>
                 </svg>
-              </button>
+              </a>
             </div>
           </header>
           <!--Main Content-->
@@ -57,58 +89,102 @@
                   </div>
 
                   <!--Display query-->
-                  <div id="display_result" class="lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg min-h-[32rem] max-h-screen h-fit overflow-y-scroll overflow-x-hidden p-10 flex-row items-end justify-start relative">
+                  <div class="lg:w-2/3 md:w-1/2 flex-row">
+                    <div class="mb-2 flex items-center">
+                        <input id="checkAll" class="dark:border-white-400/20 dark:scale-100 transition-all duration-500 ease-in-out dark:hover:scale-110 dark:checked:scale-100 w-6 h-6" type="checkbox">
+                        <label class="ml-2">Chọn tất cả</label>  
+                    </div>  
+                    <ul id="display_result" class="connected-sortable droppable-area1  bg-gray-300 rounded-lg min-h-[32rem] max-h-screen h-fit overflow-y-scroll overflow-x-hidden p-10 flex-row items-end justify-start relative">
 
-                  </div>
-
+                    </ul>
+                    <button class="cursor-pointer group relative flex items-end float-right m-4 gap-1.5 px-8 py-4 bg-green-500 bg-opacity-80 text-[#f1f1f1] rounded-3xl hover:bg-opacity-70 transition font-semibold shadow-md" onclick="download_csv()">
+                      <svg fill="#ffffff" height="32px" width="32px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M499.677,426.489c4.428,0,8.017-3.589,8.017-8.017V84.977c0-2.1-0.862-4.183-2.347-5.668l-76.96-76.96 C426.899,0.863,424.818,0,422.716,0H106.324C92.473,0,81.205,11.268,81.205,25.119v9.086H12.261 c-6.987,0-10.615,8.738-5.669,13.685l62.741,62.741L6.592,173.371c-4.946,4.947-1.319,13.685,5.669,13.685h68.944v299.825 c0,13.851,11.268,25.119,25.119,25.119h376.251c13.851,0,25.119-11.268,25.119-25.119v-34.205c0-4.427-3.588-8.017-8.017-8.017 c-4.428,0-8.017,3.589-8.017,8.017v34.205c0,5.01-4.076,9.086-9.086,9.086H106.324c-5.01,0-9.086-4.076-9.086-9.086V187.056 h51.841c4.428,0,8.017-3.589,8.017-8.017s-3.588-8.017-8.017-8.017H31.615l54.724-54.724c3.131-3.131,3.131-8.207,0-11.337 L31.615,50.238h348.88v120.785H183.284c-4.428,0-8.017,3.589-8.017,8.017s3.588,8.017,8.017,8.017h205.228 c4.428,0,8.017-3.589,8.017-8.017V42.221c0-4.427-3.588-8.017-8.017-8.017H97.238v-9.086c0-5.01,4.076-9.086,9.086-9.086H414.7 v51.841c0,13.851,11.268,25.119,25.119,25.119h51.841v325.478C491.66,422.9,495.248,426.489,499.677,426.489z M439.819,76.96 c-5.01,0-9.086-4.076-9.086-9.086V27.37l49.589,49.59H439.819z"></path> </g> </g> <g> <g> <path d="M191.835,128.267h-17.637V92.994h17.637c4.428,0,8.017-3.589,8.017-8.017s-3.588-8.017-8.017-8.017h-25.653 c-4.428,0-8.017,3.589-8.017,8.017v51.307c0,4.427,3.588,8.017,8.017,8.017h25.653c4.428,0,8.017-3.589,8.017-8.017 S196.264,128.267,191.835,128.267z"></path> </g> </g> <g> <g> <path d="M243.142,102.614h-17.637v-9.62h17.637c4.428,0,8.017-3.589,8.017-8.017s-3.588-8.017-8.017-8.017h-25.653 c-4.428,0-8.017,3.589-8.017,8.017v25.653c0,4.427,3.588,8.017,8.017,8.017h17.637v9.62h-17.637c-4.428,0-8.017,3.589-8.017,8.017 s3.588,8.017,8.017,8.017h25.653c4.428,0,8.017-3.589,8.017-8.017V110.63C251.159,106.203,247.571,102.614,243.142,102.614z"></path> </g> </g> <g> <g> <path d="M305.536,77.372c-4.145-1.382-8.76,0.925-10.141,5.071l-9.497,28.49l-9.497-28.49c-1.401-4.201-5.939-6.472-10.141-5.071 c-4.201,1.4-6.47,5.94-5.07,10.141l17.102,51.307c1.09,3.273,4.154,5.481,7.605,5.481c3.451,0,6.515-2.208,7.605-5.481 l17.102-51.307C311.986,83.368,309.68,78.754,305.536,77.372z"></path> </g> </g> <g> <g> <path d="M414.165,213.779H174.733c-9.136,0-16.568,7.432-16.568,16.568v222.33h0c0,9.136,7.432,16.568,16.568,16.568h239.432 c9.136,0,16.568-7.432,16.568-16.568v-222.33C430.733,221.211,423.301,213.779,414.165,213.779z M414.7,452.676 c0,0.295-0.24,0.534-0.534,0.534H174.733c-0.294,0-0.534-0.239-0.534-0.534v-222.33c0-0.295,0.24-0.534,0.534-0.534h239.432 c0.294,0,0.534,0.239,0.534,0.534V452.676z"></path> </g> </g> <g> <g> <path d="M243.142,256.534h-34.205c-4.428,0-8.017,3.589-8.017,8.017s3.588,8.017,8.017,8.017h34.205 c4.428,0,8.017-3.589,8.017-8.017S247.571,256.534,243.142,256.534z"></path> </g> </g> <g> <g> <path d="M379.961,256.534H277.347c-4.428,0-8.017,3.589-8.017,8.017s3.588,8.017,8.017,8.017h102.614 c4.428,0,8.017-3.589,8.017-8.017S384.389,256.534,379.961,256.534z"></path> </g> </g> <g> <g> <path d="M243.142,307.841h-34.205c-4.428,0-8.017,3.589-8.017,8.017s3.588,8.017,8.017,8.017h34.205 c4.428,0,8.017-3.589,8.017-8.017S247.571,307.841,243.142,307.841z"></path> </g> </g> <g> <g> <path d="M379.961,307.841H277.347c-4.428,0-8.017,3.589-8.017,8.017s3.588,8.017,8.017,8.017h102.614 c4.428,0,8.017-3.589,8.017-8.017S384.389,307.841,379.961,307.841z"></path> </g> </g> <g> <g> <path d="M243.142,359.148h-34.205c-4.428,0-8.017,3.589-8.017,8.017c0,4.427,3.588,8.017,8.017,8.017h34.205 c4.428,0,8.017-3.589,8.017-8.017C251.159,362.738,247.571,359.148,243.142,359.148z"></path> </g> </g> <g> <g> <path d="M303,359.148h-25.653c-4.428,0-8.017,3.589-8.017,8.017c0,4.427,3.588,8.017,8.017,8.017H303 c4.428,0,8.017-3.589,8.017-8.017C311.017,362.738,307.429,359.148,303,359.148z"></path> </g> </g> <g> <g> <path d="M243.142,410.455h-34.205c-4.428,0-8.017,3.589-8.017,8.017c0,4.427,3.588,8.017,8.017,8.017h34.205 c4.428,0,8.017-3.589,8.017-8.017C251.159,414.044,247.571,410.455,243.142,410.455z"></path> </g> </g> <g> <g> <path d="M303,410.455h-25.653c-4.428,0-8.017,3.589-8.017,8.017c0,4.427,3.588,8.017,8.017,8.017H303 c4.428,0,8.017-3.589,8.017-8.017C311.017,414.044,307.429,410.455,303,410.455z"></path> </g> </g> <g> <g> <path d="M369.018,392.818l17.101-20.522c2.834-3.401,2.374-8.456-1.026-11.291c-3.4-2.833-8.455-2.374-11.291,1.026 l-15.219,18.263l-15.219-18.263c-2.835-3.402-7.89-3.861-11.291-1.026c-3.401,2.835-3.86,7.89-1.026,11.291l17.101,20.522 l-17.101,20.522c-2.573,3.087-2.422,7.759,0.357,10.667c3.263,3.413,8.937,3.225,11.96-0.402l15.219-18.263l15.219,18.263 c3.023,3.628,8.697,3.815,11.96,0.402c2.78-2.907,2.93-7.578,0.357-10.667L369.018,392.818z"></path> </g> </g> </g></svg>
+                      Tải CSV
+                      <div class="absolute opacity-0 -bottom-full rounded-md py-2 px-2 bg-black bg-opacity-70 left-1/2 -translate-x-1/2 group-hover:opacity-100 transition-opacity shadow-lg">
+                        Tải về file csv
+                      </div>
+                  </button>
                 </div>
               </section>
           </main>
-
-          <!--Footer-->
-          <footer class="text-gray-600 body-font">
-            <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
-              <a class="flex title-font font-medium items-center md:justify-start justify-center text-gray-900">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                </svg>
-                <span class="ml-3 text-xl">Tailblocks</span>
-              </a>
-              <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">© 2020 Tailblocks —
-                <a href="https://twitter.com/knyttneve" class="text-gray-600 ml-1" rel="noopener noreferrer" target="_blank">@knyttneve</a>
-              </p>
-              
+          <div id="myNav" class="overlay">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="w-full h-full flex justify-center items-center">
+              <div class="w-3/5 h-3/5 flex justify-center">
+                <iframe id="youtube_video" class="aspect-video" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>
             </div>
-          </footer>
+          </div>
+
     </body>
     <script>
         function update_quantity(value) {
           document.getElementById("retrieval_result_quantity").value = value;
           document.getElementById("quantity-range").value = value;
         }
+        function openNav(youtube_id, time) {
+          $('#youtube_video').attr("src", "https://www.youtube.com/embed/"+youtube_id+"?start="+time)
+          $("#myNav").css('width' , "100%");
+          $('body').css('overflow-y', 'hidden');
+        }
+
+        function closeNav() {
+          $('#youtube_video').attr("src","")
+          $("#myNav").css('width' , "0%");
+          $('body').css('overflow-y', 'scroll');
+        }
     </script>
+    <script src="{{url_for('static', filename='js/to_csv.js')}}"></script>
     <script>
       function data_retrieval(){
-        let query = $('#query_data').val();
+        let query = $('#query_data').val().toString('utf-8');
         let k = $('#retrieval_result_quantity').val()
         // console.log(query, k)
-      $.ajax({
+        $.ajax({
                 type : 'POST',
                 url : "/video_retrieval",
                 data: {"query":query, 'k': k},
                 success: function(data, textStatus, jqXHR){
+                  console.log(data)
+                  receive_data = {}
+                  for (key of data) {
+                    parse_json = JSON.parse(key)
+                    receive_data[parse_json.ID] = {
+                      ID: parse_json.ID,
+                      Video_info: parse_json.Video_info,
+                      Image: parse_json.Image,
+                      Video: parse_json.Video,
+                      Frame_id: parse_json.Frame_id,
+                      Youtube_id: parse_json.Youtube_id
+                    };
+                  }
+                  console.log(receive_data)
+                  localStorage.setItem("retrieval_data", JSON.stringify(receive_data));
+                  // console.log(localStorage.getItem("retrieval_data"))
+                  $('#display_result').empty();
                     data.forEach(ele => {
                       element = JSON.parse(ele)
                       console.log(element)
                       $('#display_result').append(`
-                      <div class="mb-8 flex lg:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
-                        <img alt="team" class="w-3/4 flex-shrink-0 rounded-lg max-w-128 max-h-72 object-cover object-center sm:mb-0 mb-4" src="data:image/png;base64,${element.Image}">
-                        <div class="flex-grow sm:pl-8 sm:w-full w-1/4">
-                          <h2 class="title-font font-medium text-gray-900 mb-3">Video: ${element.Video}</h2>
-                          <h3 class="title-font font-medium text-gray-600 mb-3">Frame ID: ${element.Frame_id}</h3>
-                          <h3 class="title-font font-medium text-gray-600 mb-3">Kết quả Q&A : ${element.qa}</h3>          
+                      <li class="draggable-item flex" id="${element.ID}">
+                        <div class="h-full w-10">
+                            <input class="dark:border-white-400/20 dark:scale-100 transition-all duration-500 ease-in-out dark:hover:scale-110 dark:checked:scale-100 w-6 h-6" type="checkbox">
                         </div>
-                      </div>
+                        <div class="h_full">
+                          <div draggable="true" class="result mb-8 flex lg:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
+                          <img draggable="false" alt="team" 
+                          class="w-3/4 flex-shrink-0 rounded-lg max-w-128 max-h-72 object-cover object-center sm:mb-0 mb-4" 
+                          src="data:image/png;base64,${element.Image}"
+                          onclick="openNav('${element.Youtube_id}', '${Math.round(+(element.Frame_id)/ 25 )}')">
+                          <div draggable="false" class="flex-grow sm:pl-8 sm:w-full w-1/4">
+                            <h2 class="title-font font-medium text-gray-900 mb-3">ID: ${element.ID}</h2>
+                            <h3 class="title-font font-medium text-gray-600 mb-3">Frame ID: ${element.Frame_id}</h3>
+                            <h3 class="title-font font-medium text-gray-600 mb-3">Video info : ${element.Video_info}</h3>    
+                            <h3 class="title-font font-medium text-gray-600 mb-3">Thời điểm của frame : ${Math.floor(+(element.Frame_id)/ 25 / 60 )}:${Math.floor(+(element.Frame_id)/ 25 % 60)}</h3>           
+                          </div>
+                        </div>
+                        </div>
+                      </li>
                       `)
                     });
                     // $("#abcd").attr("src","data:image/png;base64,"+data)
@@ -116,4 +192,31 @@
                 });
               }
     </script>
+    <script>
+      function download_csv(){
+        data_to_csv = []
+        data_lst = JSON.parse(localStorage.getItem("retrieval_data"))
+        $("#display_result").find("input:checkbox:checked").each(function(){
+          data_to_csv.push(data_lst[$(this).parent().parent().attr('id')])
+        })
+        column_to_get = ['Video_info', 'Frame_id']
+        exportJSONToCSV(data_to_csv, column_to_get)
+        // console.log(JSON.parse(localStorage.getItem("retrieval_data")))
+      }
+    </script>
+    <script>
+      $( init );
+function init() {
+  $( ".droppable-area1" ).sortable({
+      connectWith: ".connected-sortable",
+      stack: '.connected-sortable ul'
+    }).disableSelection();
+}
+    </script>
+    <script>
+      $("#checkAll").click(function(){
+        $("#display_result").find("input:checkbox").prop('checked', this.checked);
+});
+    </script>
+
 </html>
