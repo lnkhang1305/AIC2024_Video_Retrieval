@@ -48,7 +48,7 @@ def search_images_with_text(query_text, device, model, index, client):
 
     result_ids = [int(idx) for idx in indices[0]]
     results = client.retrieve(
-        collection_name='image_collection', ids=result_ids)
+        collection_name=COLLECTION_NAME, ids=result_ids)
 
     top_5_images = []
     for result in results:
