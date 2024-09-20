@@ -13,19 +13,22 @@
 |
 |-- templates/
 |
-|-- data/
-|-- |-- batch_1/
-|-- |-- |-- clip_features_l14
-|-- |-- |-- clip_features_b16
-|-- |-- |-- clip_features_b32
-|-- |-- |-- keyframes
-|-- |-- |-- map_frames
-|-- |-- batch_2/
-|-- |-- |-- clip_features_l14
-|-- |-- |-- clip_features_b16
-|-- |-- |-- clip_features_b32
-|-- |-- |-- keyframes
-|-- |-- |-- map_frames
+|-- clip_features_l14/
+|-- |-- Lxx/
+|-- |-- |-- Vxxx.npy
+|-- clip_features_b16 (Tương tự)
+|-- clip_features_b32 (Tương tự)
+|
+|-- keyframes/
+|-- |-- Keyframes/
+|-- |-- |-- Lxx/
+|-- |-- |-- |-- xxx.jpg
+|
+|-- map-keyframes/
+|-- |-- Lxx_Vxxx.csv
+|
+|-- media_info/
+|-- |-- Lxx_Vxxx.json
 ```
 
 # Usage

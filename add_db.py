@@ -31,6 +31,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', type=str, help='Name of collection')
     # Ex: ./data/batch_1
+    # New_update: -b ./keyframes
     parser.add_argument('-b', type=str, help='Path to folder batch_x')
     parser.add_argument('-c', type=str, help='Choose clip model (b16/b32/l14)')
 
