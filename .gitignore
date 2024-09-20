@@ -167,4 +167,6 @@ clip_features_l14
 clip-features-32
 qdrant_storage
 index.ivf
+clip_features_l14
+
 data
