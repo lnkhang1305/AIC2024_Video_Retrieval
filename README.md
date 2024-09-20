@@ -32,6 +32,7 @@
 ```
 
 # Usage
+## Host qdrant
 1. Cài đặt Docker
 2. Cài đặt qdrant qua image của docker
 ```
@@ -42,6 +43,15 @@ docker pull qdrant/qdrant
 docker run -p 6333:6333 -v direct_path_to_qdrant_storage:/qdrant/storage qdrant/qdrant
 ```
 4. Chạy file search.py 
+## Using add_db.py
+```
+python add_db.py -n name_qdrant_collection -c type_of_clip_model(l14/b32/b16)
+```
+1. Khi chạy, name_qdrant_collection đặt theo mẫu: {type_of_clip_model}_collection
+2. Thư mục chứa cấu hình qdrant:
+- l14_storage: model CLIP_L14
+- b32_storage: model CLIP_B32
+- b16_storage: model CLIP_B16
 
 ## Chạy web
 1. Chạy command để cài đặt các thư viện cần thiết
