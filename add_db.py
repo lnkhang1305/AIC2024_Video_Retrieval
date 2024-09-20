@@ -21,7 +21,7 @@ def add_to_db(collection_name, clip_files, scene_frames, index_files, idx=0):
                     {
                         "id": idx,
                         "vector": embeddings[i].reshape(1, -1).flatten(),
-                        "payload": {"image_path": scene_frame+'/'+frame_path, "video": clip_file.split('/')[3], "frame_idx": int(index_frames.iloc[i])}
+                        "payload": {"image_path": scene_frame+'/'+frame_path, "video": scene_frame.split('/')[-1], "frame_idx": int(index_frames.iloc[i])}
                     }
                 ]
             )
@@ -42,6 +42,7 @@ if __name__ == "__main__":
         dimension = 768
     else:
         dimension = 512
+    index = faiss.IndexFlatIP(dimension)
     client = QdrantClient(url="http://localhost:6333")
     if not client.collection_exists(collection_name):
         client.create_collection(
@@ -64,11 +65,13 @@ if __name__ == "__main__":
         for scene_frame in sorted(os.listdir(frame_path+'/'+video_frame)):
             scene_frames.append(frame_path+'/'+video_frame+'/'+scene_frame)
 
-index_files = []
-index_path = r"map-keyframes" if os.path.exists(r"map-keyframes") else r"D:\AI_chalenge_2024\AI_Challenge\db\map-keyframes-b1\map-keyframes"
-for index_file in sorted(os.listdir(index_path)):
-    index_files.append(os.path.join(index_path, index_file))
+    index_files = []
+    index_path = r"map-keyframes" if os.path.exists(
+        r"map-keyframes") else r"D:\AI_chalenge_2024\AI_Challenge\db\map-keyframes-b1\map-keyframes"
+    for index_file in sorted(os.listdir(index_path)):
+        index_files.append(os.path.join(index_path, index_file))
 
-add_to_db(clip_files=clip_files, scene_frames=scene_frames,
-          index_files=index_files)
-
+    add_to_db(collection_name=collection_name,
+              clip_files=clip_files,
+              scene_frames=scene_frames,
+              index_files=index_files)
