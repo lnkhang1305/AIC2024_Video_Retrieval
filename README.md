@@ -13,19 +13,11 @@
 |
 |-- templates/
 |
-|-- data/
-|-- |-- batch_1/
-|-- |-- |-- clip_features_l14
-|-- |-- |-- clip_features_b16
-|-- |-- |-- clip_features_b32
-|-- |-- |-- keyframes
-|-- |-- |-- map_frames
-|-- |-- batch_2/
-|-- |-- |-- clip_features_l14
-|-- |-- |-- clip_features_b16
-|-- |-- |-- clip_features_b32
-|-- |-- |-- keyframes
-|-- |-- |-- map_frames
+|-- clip_features_l14
+|-- clip_features_b16
+|-- clip_features_b32
+|-- keyframes
+|-- map-keyframes
 ```
 
 # Usage
