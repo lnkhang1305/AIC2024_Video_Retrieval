@@ -32,15 +32,16 @@ def add_to_db(clip_files, scene_frames, index_files):
     faiss.write_index(index, "index.ivf")
 
 
-dimension = 512
+dimension = 768
 index = faiss.IndexFlatIP(dimension)
 client = QdrantClient(url="http://localhost:6333")
 client.recreate_collection(
     collection_name='image_collection',
-    vectors_config=VectorParams(size=768, distance=Distance.COSINE)
+    vectors_config=VectorParams(size=dimension, distance=Distance.COSINE)
 )
+
 name_of_model = "CLIP_L14@336PX" #name of model folder
-clip_path = name_of_model if os.path.exists(name_of_model) else os.path.join(r"D:\AI_chalenge_2024\AI_Challenge\model",name_of_model)
+clip_path = name_of_model if os.path.exists(name_of_model) else os.path.join(r"D:\AI_chalenge_2024\AI_Challenge\db\dot2",name_of_model)
 clip_files = []
 for video_path in sorted(os.listdir(clip_path)):
     for clip in sorted(os.listdir(os.path.join(clip_path,video_path))):
@@ -48,15 +49,17 @@ for video_path in sorted(os.listdir(clip_path)):
 
 scene_frames = []
 frame_path = []
-keyframes_path = r"keyframes" if os.path.exists(r"keyframes") else r"D:\AI_chalenge_2024\AI_Challenge\db\videos"
+keyframes_path = r"keyframes" if os.path.exists(r"keyframes") else r"D:\AI_chalenge_2024\AI_Challenge\db\dot2\keyframes"
 for i in range(1,13):
     frame_path.append(os.path.join(keyframes_path, "Keyframes_L"+ str(i).rjust(2,'0')))
     # print(frame_path)
 
 for kf in frame_path:
     for video_frame in sorted(os.listdir(kf)):
-        for scene_frame in sorted(os.listdir(os.path.join(kf,video_frame))):
-            scene_frames.append(os.path.join(kf, video_frame, scene_frame))
+        scene_frames.append(os.path.join(kf, video_frame))
+        # for scene_frame in sorted(os.listdir(os.path.join(kf,video_frame))):
+        #     # print(os.path.join(kf, video_frame, scene_frame))
+        #     scene_frames.append(os.path.join(kf, video_frame, scene_frame))
 
 index_files = []
 index_path = r"map-keyframe" if os.path.exists(r"map-keyframe") else r"D:\AI_chalenge_2024\AI_Challenge\db\map-keyframes-b1\map-keyframes"

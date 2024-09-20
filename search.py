@@ -13,10 +13,13 @@ import os
 import re
 
 
-def init_model():
+def init_model(model_name):
     device = "cpu"
     # print(device)
-    model, preprocess = clip.load(r"D:\AI_chalenge_2024\AI_Challenge\model\ViT-B-16.pt", device=device)
+    try:
+        model, preprocess = clip.load(os.path.join(r"D:\AI_chalenge_2024\AI_Challenge\model",model_name+".pt"), device=device)
+    except:
+        model, preprocess = clip.load(model_name, device=device)
     index = faiss.read_index('index.ivf')
     client = QdrantClient(url="http://localhost:6333")
     return model, index, client
