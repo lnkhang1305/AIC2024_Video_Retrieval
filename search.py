@@ -1,6 +1,7 @@
 import clip
 import torch
 import faiss
+import os
 from qdrant_client import QdrantClient
 import matplotlib.pyplot as plt
 import numpy as np
@@ -25,6 +26,7 @@ def init_model():
 
 
 def search_images_with_text(query_text, device, model, index, client):
+    cur_folder = os.getcwd()
     # with torch.no_grad():
     #     text_vector = model.encode_text(open_clip.tokenize([query_text])).cpu().numpy().flatten()
     text_inputs = clip.tokenize(query_text).to(device)
@@ -54,7 +56,7 @@ def search_images_with_text(query_text, device, model, index, client):
     _, axs = plt.subplots(2, 3, figsize=(10, 7))
     for i, ax in enumerate(axs.flat[:-1]):
         path = top_5_images[i].payload['image_path']
-        path = path.replace("./keyframes/Keyframes_"+top_5_images[i].payload['video'], "D:\AI_chalenge_2024\AI_Challenge\db\\videos\\Keyframes_"+top_5_images[i].payload['video']+"\\keyframes")
+        path = path.replace("./keyframes/Keyframes_"+top_5_images[i].payload['video'], "D:\AI_chalenge_2024\AI_Challenge\db\\videos\\Keyframes_"+top_5_images[i].payload['video'].split('_')[0]+"\\keyframes")
         ax.imshow(Image.open(path))
         ax.set_title(f'ID: {top_5_images[i].id}')
         ax.axis('off')

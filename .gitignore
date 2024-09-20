@@ -163,7 +163,7 @@ cython_debug/
 keyframes
 media-info
 map-keyframes
-clip_features
+clip_features_l14
 clip-features-32
 qdrant_storage
 index.ivf

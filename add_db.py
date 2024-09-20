@@ -19,7 +19,7 @@ def add_to_db(collection_name, clip_files, scene_frames, index_files, idx=0):
                     {
                         "id": idx,
                         "vector": embeddings[i].reshape(1, -1).flatten(),
-                        "payload": {"image_path": scene_frame+'/'+frame_path, "video": clip_file.split('/')[5], "frame_idx": int(index_frames.iloc[i])}
+                        "payload": {"image_path": scene_frame+'/'+frame_path, "video": clip_file.split('/')[3], "frame_idx": int(index_frames.iloc[i])}
                     }
                 ]
             )
@@ -31,12 +31,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', type=str, help='Name of collection')
     # Ex: ./data/batch_1
-    parser.add_argument('-b', type=str, help='Path to folder batch_x')
     parser.add_argument('-c', type=str, help='Choose clip model (b16/b32/l14)')
 
     args = parser.parse_args()
 
-    collection_name, batch_path, clip_feature_model = args.n, args.b, args.c
+    collection_name, clip_feature_model = args.n, args.c
     if clip_feature_model == 'l14':
         dimension = 768
     else:
@@ -51,20 +50,20 @@ if __name__ == "__main__":
     else:
         client.get_collection(collection_name)
 
-    clip_path = batch_path + '/clip_features_' + clip_feature_model
+    clip_path = './clip_features_' + clip_feature_model
     clip_files = []
     for video_path in sorted(os.listdir(clip_path)):
         for clip in sorted(os.listdir(clip_path+'/'+video_path)):
             clip_files.append(clip_path+'/'+video_path+'/'+clip)
 
     scene_frames = []
-    frame_path = batch_path + '/keyframes'
+    frame_path = './keyframes'
     for video_frame in sorted(os.listdir(frame_path)):
         for scene_frame in sorted(os.listdir(frame_path+'/'+video_frame)):
             scene_frames.append(frame_path+'/'+video_frame+'/'+scene_frame)
 
     index_files = []
-    index_path = batch_path + '/map_frames'
+    index_path = './map-keyframes'
     for index_file in sorted(os.listdir(index_path)):
         index_files.append(index_path+'/'+index_file)
     # w-write; a-append
