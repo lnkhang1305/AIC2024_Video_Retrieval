@@ -52,6 +52,7 @@ python add_db.py -n name_qdrant_collection -c type_of_clip_model(l14/b32/b16)
 - l14_storage: model CLIP_L14
 - b32_storage: model CLIP_B32
 - b16_storage: model CLIP_B16
+3. Khi có qdrant_strorage, cần tải toàn bộ keyframes để hiện thị ảnh cho web sau đó host qdrant với đường dẫn trỏ vào qdrant_storage và host web.
 
 ## Chạy web
 1. Chạy command để cài đặt các thư viện cần thiết
