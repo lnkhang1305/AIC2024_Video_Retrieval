@@ -1,4 +1,5 @@
 import os
+import argparse
 import numpy as np
 import pandas as pd
 import faiss
@@ -6,9 +7,9 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
 
 
-def add_to_db(clip_files, scene_frames, index_files):
-    idx = 0
+def add_to_db(collection_name, clip_files, scene_frames, index_files, idx=0):
     for clip_file, scene_frame, index_file in zip(clip_files, scene_frames, index_files):
+        # print(collection_name)
         embeddings = np.load(clip_file)
         index_frames = pd.read_csv(index_file, usecols=['frame_idx'])
         for i, frame_path in enumerate(sorted(os.listdir(scene_frame))):
@@ -16,15 +17,14 @@ def add_to_db(clip_files, scene_frames, index_files):
             index.add(embeddings[i].reshape(1, -1))
             # print(scene_frame+'/'+frame_path)
             client.upsert(
-                collection_name="image_collection",
+                collection_name=collection_name,
                 points=[
                     {
                         "id": idx,
                         "vector": embeddings[i].reshape(1, -1).flatten(),
-                        "payload": {
-                            "image_path": os.path.join(scene_frame, frame_path), 
-                            "video": clip_file.split('\\')[2], 
-                            "frame_idx": int(index_frames.iloc[i])}
+                        "payload": {"image_path": os.path.join(scene_frame,frame_path), 
+                                    "video": scene_frame.split('\\')[-1], 
+                                    "frame_idx": int(index_frames.iloc[i])}
                     }
                 ]
             )
@@ -32,37 +32,53 @@ def add_to_db(clip_files, scene_frames, index_files):
     faiss.write_index(index, "index.ivf")
 
 
-dimension = 768
-index = faiss.IndexFlatIP(dimension)
-client = QdrantClient(url="http://localhost:6333")
-client.recreate_collection(
-    collection_name='image_collection',
-    vectors_config=VectorParams(size=768, distance=Distance.COSINE)
-)
-name_of_model = "CLIP_L14@336PX" #name of model folder
-clip_path = name_of_model if os.path.exists(name_of_model) else os.path.join(r"D:\AI_chalenge_2024\AI_Challenge\model",name_of_model)
-clip_files = []
-for video_path in sorted(os.listdir(clip_path)):
-    for clip in sorted(os.listdir(os.path.join(clip_path,video_path))):
-        clip_files.append(os.path.join(clip_path, video_path, clip))
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', type=str, help='Name of collection')
+    # Ex: ./data/batch_1
+    parser.add_argument('-c', type=str, help='Choose clip model (b16/b32/l14)')
 
-scene_frames = []
-frame_path = []
-keyframes_path = r"keyframes" if os.path.exists(r"keyframes") else r"D:\AI_chalenge_2024\AI_Challenge\db\videos"
-for i in range(1,13):
-    frame_path.append(os.path.join(keyframes_path, "Keyframes_L"+ str(i).rjust(2,'0')))
-    # print(frame_path)
+    args = parser.parse_args()
 
-for kf in frame_path:
-    for video_frame in sorted(os.listdir(kf)):
-        for scene_frame in sorted(os.listdir(os.path.join(kf,video_frame))):
-            scene_frames.append(os.path.join(kf, video_frame, scene_frame))
+    collection_name, clip_feature_model = args.n, args.c
+    if clip_feature_model == 'l14':
+        dimension = 768
+    else:
+        dimension = 512
+    index = faiss.IndexFlatIP(dimension)
+    client = QdrantClient(url="http://localhost:6333")
+    if not client.collection_exists(collection_name):
+        client.create_collection(
+            collection_name=collection_name,
+            vectors_config=VectorParams(
+                size=dimension, distance=Distance.COSINE)
+        )
+    else:
+        client.get_collection(collection_name)
 
-index_files = []
-index_path = r"map-keyframes" if os.path.exists(r"map-keyframes") else r"D:\AI_chalenge_2024\AI_Challenge\db\map-keyframes-b1\map-keyframes"
-for index_file in sorted(os.listdir(index_path)):
-    index_files.append(os.path.join(index_path, index_file))
+    clip_path = './clip_features_' + clip_feature_model
+    if not os.path.exists(clip_path):
+        clip_path = os.path.join(r"D:\AI_chalenge_2024\AI_Challenge\db\dot2", 'clip_features_' + clip_feature_model)
+    clip_files = []
+    for video_path in sorted(os.listdir(clip_path)):
+        for clip in sorted(os.listdir(os.path.join(clip_path,video_path))):
+            clip_files.append(os.path.join(clip_path,video_path,clip))
 
-add_to_db(clip_files=clip_files, scene_frames=scene_frames,
-          index_files=index_files)
+    scene_frames = []
+    frame_path = './keyframes/Keyframes'
+    if not os.path.exists(frame_path):
+        frame_path = r"D:\AI_chalenge_2024\AI_Challenge\db\dot2\keyframes\Keyframes"
+    for video_frame in sorted(os.listdir(frame_path)):
+        for scene_frame in sorted(os.listdir(os.path.join(frame_path,video_frame))):
+            scene_frames.append(os.path.join(frame_path,video_frame,scene_frame))
 
+    index_files = []
+    index_path = r"map-keyframes" if os.path.exists(
+        r"map-keyframes") else r"D:\AI_chalenge_2024\AI_Challenge\db\map-keyframes-b1\map-keyframes"
+    for index_file in sorted(os.listdir(index_path)):
+        index_files.append(os.path.join(index_path, index_file))
+
+    add_to_db(collection_name=collection_name,
+              clip_files=clip_files,
+              scene_frames=scene_frames,
+              index_files=index_files)
