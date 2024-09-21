@@ -168,7 +168,7 @@ map-keyframes
 index.ivf
 # Thư mục cấu hình qdrant
 l14_storage
-
+qdrant_storage
 # Thư mục chứa CLIP-features    
 clip_features_l14
 clip_features_b32
