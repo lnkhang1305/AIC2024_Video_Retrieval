@@ -19,13 +19,20 @@ COLLECTION_NAME = "l14_collection"      #
 # ----------------------------------------#
 
 
-def init_model(model_name):
+def init_model():
     device = "cpu"
     # print(device)
-    model, preprocess = clip.load(CLIP_MODEL, device=device)
+    if os.path.exists(r"D:\AI_chalenge_2024\AI_Challenge\model"):
+        model_l14, preprocess = clip.load(r"D:\AI_chalenge_2024\AI_Challenge\model\ViT-L-14-336px.pt", device=device)
+        model_b16, preprocess = clip.load(os.path.join(r"D:\AI_chalenge_2024\AI_Challenge\model","ViT-B-16.pt"), device=device)
+        model_b32, preprocess = clip.load(os.path.join(r"D:\AI_chalenge_2024\AI_Challenge\model","ViT-B-32.pt"), device=device)
+    else:
+        model_l14, preprocess = clip.load("ViT-L/14@336px", device=device)
+        model_b16, preprocess = clip.load("ViT-B/16", device=device)
+        model_b32, preprocess = clip.load("ViT-B-32", device=device)
     index = faiss.read_index('index.ivf')
     client = QdrantClient(url="http://localhost:6333")
-    return model, index, client
+    return model_l14, model_b16, model_b32, index, client
 
 
 def search_images_with_text(query_text, device, model, index, client):
@@ -85,8 +92,8 @@ def get_youtube_video_id_by_url(url):
         return ""
 
 
-def search_images_from_query(query_text, k, model, index, client):
-    path_to_media_info_folder = "./media-info" if os.path.exists(
+def search_images_from_query(query_text, k, model, index, client, collection):
+    path_to_media_info_folder = "media-info" if os.path.exists(
         "media-info") else r"D:\AI_chalenge_2024\AI_Challenge\db\media-info-b1\media-info"
     text_inputs = clip.tokenize(query_text, truncate=True).to("cpu")
     with torch.no_grad(), torch.cuda.amp.autocast():
@@ -96,7 +103,7 @@ def search_images_from_query(query_text, k, model, index, client):
     distances, indices = index.search(text_vector_np, k=int(k))
     result_ids = [int(idx) for idx in indices[0]]
     results = client.retrieve(
-        collection_name=COLLECTION_NAME, ids=result_ids)
+        collection_name=collection, ids=result_ids)
     return_result = []
     pattern = r'L\d{2}_V\d{3}'
     for result in results:
