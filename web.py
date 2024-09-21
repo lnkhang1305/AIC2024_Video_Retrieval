@@ -4,7 +4,7 @@ import json
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 app = Flask(__name__)
-model_l14, model_b16, model_b32, index, client = init_model()
+model_l14, model_b16, model_b32, index_l14, index_b16, index_b32, client = init_model()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -14,12 +14,13 @@ def homepage():
 
 @app.route('/video_retrieval', methods=['GET', 'POST'])
 def get_data():
+    print(request.form['model'] )
     if(request.form['model'] == "l14"):
-        return_data = search_images_from_query(translate_to_EN(request.form['query']), request.form['k'], model_l14, index, client, "l14_collection")
+        return_data = search_images_from_query(translate_to_EN(request.form['query']), request.form['k'], model_l14, index_l14, client, "l14_collection")
     elif(request.form['model'] == "b16"):
-        return_data = search_images_from_query(translate_to_EN(request.form['query']), request.form['k'], model_b16, index, client, "b16_collection")
+        return_data = search_images_from_query(translate_to_EN(request.form['query']), request.form['k'], model_b16, index_b16, client, "b16_collection")
     else:
-        return_data = search_images_from_query(translate_to_EN(request.form['query']), request.form['k'], model_b32, index, client, "b32_collection")
+        return_data = search_images_from_query(translate_to_EN(request.form['query']), request.form['k'], model_b32, index_b32, client, "b32_collection")
     return Response(json.dumps(return_data),  mimetype='application/json')
 #     return Response(json.dumps([
 #     json.dumps({

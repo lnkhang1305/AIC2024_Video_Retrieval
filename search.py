@@ -29,13 +29,16 @@ def init_model():
     else:
         model_l14, preprocess = clip.load("ViT-L/14@336px", device=device)
         model_b16, preprocess = clip.load("ViT-B/16", device=device)
-        model_b32, preprocess = clip.load("ViT-B-32", device=device)
-    index = faiss.read_index('index.ivf')
+        model_b32, preprocess = clip.load("ViT-B/32", device=device)
+    index_l14 = faiss.read_index('index_l14.ivf')
+    index_b16 = faiss.read_index('index_b16.ivf')
+    index_b32 = faiss.read_index('index_b32.ivf')
+
     client = QdrantClient(url="http://localhost:6333")
-    return model_l14, model_b16, model_b32, index, client
+    return model_l14, model_b16, model_b32, index_l14, index_b16, index_b32, client
 
 
-def search_images_with_text(query_text, device, model, index, client):
+def search_images_with_text(query_text, device, model, index, client): # RIGGED
     cur_folder = os.getcwd()
     # with torch.no_grad():
     #     text_vector = model.encode_text(open_clip.tokenize([query_text])).cpu().numpy().flatten()

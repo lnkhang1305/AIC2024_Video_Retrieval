@@ -16,20 +16,20 @@ def add_to_db(collection_name, clip_files, scene_frames, index_files, idx=0):
             # print(embeddings[i].shape)
             index.add(embeddings[i].reshape(1, -1))
             # print(scene_frame+'/'+frame_path)
-            client.upsert(
-                collection_name=collection_name,
-                points=[
-                    {
-                        "id": idx,
-                        "vector": embeddings[i].reshape(1, -1).flatten(),
-                        "payload": {"image_path": os.path.join(scene_frame,frame_path), 
-                                    "video": scene_frame.split('\\')[-1], 
-                                    "frame_idx": int(index_frames.iloc[i])}
-                    }
-                ]
-            )
+            # client.upsert(
+            #     collection_name=collection_name,
+            #     points=[
+            #         {
+            #             "id": idx,
+            #             "vector": embeddings[i].reshape(1, -1).flatten(),
+            #             "payload": {"image_path": os.path.join(scene_frame,frame_path), 
+            #                         "video": scene_frame.split('\\')[-1], 
+            #                         "frame_idx": int(index_frames.iloc[i])}
+            #         }
+            #     ]
+            # )
             idx += 1
-    faiss.write_index(index, "index.ivf")
+    faiss.write_index(index, "index_l14.ivf")
 
 
 if __name__ == "__main__":
