@@ -21,7 +21,7 @@
 |
 |-- keyframes/
 |-- |-- Keyframes/
-|-- |-- |-- Lxx/
+|-- |-- |-- Lxx_Vxxx/
 |-- |-- |-- |-- xxx.jpg
 |
 |-- map-keyframes/
@@ -30,7 +30,7 @@
 |-- media_info/
 |-- |-- Lxx_Vxxx.json
 ```
-
+# Cài đặt Simplewebserver [Link download](simplewebserver.org)
 # Usage
 ## Host qdrant
 1. Cài đặt Docker
@@ -59,6 +59,7 @@ python add_db.py -n name_qdrant_collection -c type_of_clip_model(l14/b32/b16)
 ```
 pip install - r requirements.txt
 ```
+1a. Chạy SimpleWebServer, tạo server với port là 5002, trỏ thư mục tới chọn pipeline_test/. Để các cấu hình còn lại mặc định. Chạy server.
 2. Chạy command để chạy flask
 ```
 python web.py
