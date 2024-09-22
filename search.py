@@ -117,8 +117,9 @@ def search_images_from_query(query_text, k, model, index, client, collection):
         with open(os.path.join(path_to_media_info_folder, data['Video_info']+".json"), 'r', encoding='utf-8') as media_json_file:
             data['Youtube_id'] = get_youtube_video_id_by_url(
                 json.load(media_json_file)['watch_url'])
-        with open(result.payload['image_path'], "rb") as image_file:
-            data['Image'] = base64.b64encode(image_file.read()).decode("utf-8")
+        data['Image'] = 'http://127.0.0.1:5002' + result.payload['image_path'][1:]
+        # with open(result.payload['image_path'], "rb") as image_file:
+        #     data['Image'] = base64.b64encode(image_file.read()).decode("utf-8")
         data['Video'] = result.payload['video']
         data['Frame_id'] = result.payload['frame_idx']
         return_result.append(json.dumps(data))
