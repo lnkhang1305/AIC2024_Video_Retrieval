@@ -22,13 +22,23 @@ COLLECTION_NAME = "l14_collection"      #
 def init_model():
     device = "cpu"
     # print(device)
-    model, preprocess = clip.load(CLIP_MODEL, device=device)
-    index = faiss.read_index('index.ivf')
+    if os.path.exists(r"D:\AI_chalenge_2024\AI_Challenge\model"):
+        model_l14, preprocess = clip.load(r"D:\AI_chalenge_2024\AI_Challenge\model\ViT-L-14-336px.pt", device=device)
+        model_b16, preprocess = clip.load(os.path.join(r"D:\AI_chalenge_2024\AI_Challenge\model","ViT-B-16.pt"), device=device)
+        model_b32, preprocess = clip.load(os.path.join(r"D:\AI_chalenge_2024\AI_Challenge\model","ViT-B-32.pt"), device=device)
+    else:
+        model_l14, preprocess = clip.load("ViT-L/14@336px", device=device)
+        model_b16, preprocess = clip.load("ViT-B/16", device=device)
+        model_b32, preprocess = clip.load("ViT-B/32", device=device)
+    index_l14 = faiss.read_index('index_l14.ivf')
+    index_b16 = faiss.read_index('index_b16.ivf')
+    index_b32 = faiss.read_index('index_b32.ivf')
+
     client = QdrantClient(url="http://localhost:6333")
-    return model, index, client
+    return model_l14, model_b16, model_b32, index_l14, index_b16, index_b32, client
 
 
-def search_images_with_text(query_text, device, model, index, client):
+def search_images_with_text(query_text, device, model, index, client): # RIGGED
     cur_folder = os.getcwd()
     # with torch.no_grad():
     #     text_vector = model.encode_text(open_clip.tokenize([query_text])).cpu().numpy().flatten()
@@ -85,8 +95,8 @@ def get_youtube_video_id_by_url(url):
         return ""
 
 
-def search_images_from_query(query_text, k, model, index, client):
-    path_to_media_info_folder = "./media-info" if os.path.exists(
+def search_images_from_query(query_text, k, model, index, client, collection):
+    path_to_media_info_folder = "media-info" if os.path.exists(
         "media-info") else r"D:\AI_chalenge_2024\AI_Challenge\db\media-info-b1\media-info"
     text_inputs = clip.tokenize(query_text, truncate=True).to("cpu")
     with torch.no_grad(), torch.cuda.amp.autocast():
@@ -96,7 +106,7 @@ def search_images_from_query(query_text, k, model, index, client):
     distances, indices = index.search(text_vector_np, k=int(k))
     result_ids = [int(idx) for idx in indices[0]]
     results = client.retrieve(
-        collection_name=COLLECTION_NAME, ids=result_ids)
+        collection_name=collection, ids=result_ids)
     return_result = []
     pattern = r'L\d{2}_V\d{3}'
     for result in results:
@@ -107,8 +117,9 @@ def search_images_from_query(query_text, k, model, index, client):
         with open(os.path.join(path_to_media_info_folder, data['Video_info']+".json"), 'r', encoding='utf-8') as media_json_file:
             data['Youtube_id'] = get_youtube_video_id_by_url(
                 json.load(media_json_file)['watch_url'])
-        with open(result.payload['image_path'], "rb") as image_file:
-            data['Image'] = base64.b64encode(image_file.read()).decode("utf-8")
+        data['Image'] = 'http://127.0.0.1:5002' + result.payload['image_path'][1:]
+        # with open(result.payload['image_path'], "rb") as image_file:
+        #     data['Image'] = base64.b64encode(image_file.read()).decode("utf-8")
         data['Video'] = result.payload['video']
         data['Frame_id'] = result.payload['frame_idx']
         return_result.append(json.dumps(data))

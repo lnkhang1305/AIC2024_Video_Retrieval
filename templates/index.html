@@ -59,37 +59,107 @@
           <!--Main Content-->
           <main>
             <section class="text-gray-600 body-font relative">
-                <div class="container px-5 py-24 mx-auto flex sm:flex-nowrap flex-wrap">
+                <div class="container px-5 py-24 mx-auto flex-row">
                     
                   <!--Input query-->
-                  <div class="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0 m-8">
-                    <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Câu truy vấn</h2>
-                    <p class="leading-relaxed mb-5 text-gray-600">Vui lòng nhập một câu mô tả</p>
-                    <div class="relative mb-4">
-                      <label for="query_data" class="leading-7 text-sm text-gray-600">Câu truy vấn</label>
-                      <textarea id="query_data" name="query_data" class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
+                  <div class="w-full bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0 m-8">
+                    <div class="flex flex-row">
+                      <div class="w-1/2">
+                        <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Câu truy vấn</h2>
+                        <p class="leading-relaxed mb-5 text-gray-600">Vui lòng nhập một câu mô tả</p>
+                      </div>
+                      <div class="w-1/2 flex flex-col">
+                        <button
+                          id="input_queries_by_folder_btn"
+                          onclick="document.getElementById('input_queries_by_folder').click()"
+                          class="button flex items-center w-96 px-4 py-2 bg-gradient-to-r from-indigo-500 via-indigo-700 to-indigo-500 text-white rounded-full shadow-2xl hover:from-indigo-600 hover:via-indigo-700 hover:to-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-opacity-70 active:bg-indigo-800 active:shadow-inner transform hover:scale-110 transition duration-500 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed ml-4"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            fill="none"
+                            class="w-8 h-8 mr-4 -ml-2 text-white animate-pulse"
+                          >
+                            <path
+                              d="M12 4v16m8-8H4"
+                              stroke-width="2"
+                              stroke-linejoin="round"
+                              stroke-linecap="round"
+                            ></path>
+                          </svg>
+                          Tải thư mục lên
+                        </button>
+                      <input id="input_queries_by_folder" type="file" class="hidden" webkitdirectory mozdirectory/>
+                      <button
+                        id="input_query_by_keyboard"
+                        class="hidden bg-white text-center w-48 rounded-2xl h-14 relative text-black text-xl group"
+                        type="button"
+                      >
+                        <div
+                          class="bg-indigo-500 rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[184px] z-10 duration-500"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 1024 1024"
+                            height="25px"
+                            width="25px"
+                          >
+                            <path
+                              d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
+                              fill="#000000"
+                            ></path>
+                            <path
+                              d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
+                              fill="#000000"
+                            ></path>
+                          </svg>
+                        </div>
+                        <p class="translate-x-2">Nhập query</p>
+                      </button>
+                      </div>
+                    </div>
+                    <div id="input_type" class="relative mb-4">
+                          <label for="query_data" class="leading-7 text-sm text-gray-600">Câu truy vấn</label>
+                          <textarea id="query_data" name="query_data" class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
                     </div>
                     <div class="relative mb-4">
                             <label for="price-range" class="leading-7 text-sm text-gray-600">Số lượng kết quả truy vấn</label>
                             <div class="w-full flex">
-                            <div class="w-3/5 mr-4">
-                                <input type="range" id="quantity-range" class="w-full mr-4 accent-indigo-600" min="5" max="100" value="10" oninput="update_quantity(this.value)">
-                                <div class="flex justify-between text-gray-500">
-                                <span id="min_quantity">10</span>
-                                <span id="max_quantity">100</span>
-                                </div>
-                            </div>
-                                <div class="flex w-2/5 h-8">
+                              <div class="w-3/5 mr-4">
+                                  <input type="range" id="quantity-range" class="w-full mr-4 accent-indigo-600" min="5" max="100" value="10" oninput="update_quantity(this.value)">
+                                  <div class="flex justify-between text-gray-500">
+                                    <span id="min_quantity">10</span>
+                                    <span id="max_quantity">100</span>
+                                  </div>
+                              </div>
+                              <div class="flex w-1/5 h-8 justify-center">
                                 <p class="content-center">Số lượng: </p>
                                 <input type="text" id="retrieval_result_quantity" class="w-2/5 input input-bordered content-center ml-2 border-b-2 border-black" value="10" onchange="update_quantity(this.value)"/>
+                              </div>
+                              <div class="w-1/5 flex flex-row items-center"> 
+                                <label class="mr-2">Model: </label>     
+                                <div class="w-full relative">
+                                  <select
+                                    id="model_for_query"
+                                    class="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md appearance-none cursor-pointer">
+                                    <option value="l14" selected>L-14</option>
+                                    <option value="b32">B-32</option>
+                                    <option value="b16">B-16</option>
+                                  </select>
+                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.2" stroke="currentColor" class="h-5 w-5 ml-1 absolute top-2.5 right-2.5 text-slate-700">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                  </svg>
                                 </div>
+                              </div>
                             </div>
+                            
                     </div>
                     <button class="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg" onclick="data_retrieval()">Truy vấn</button>
                   </div>
 
                   <!--Display query-->
-                  <div class="lg:w-2/3 md:w-1/2 flex-row">
+                  <div class="w-full flex-row">
                     <div class="mb-2 flex items-center">
                         <input id="checkAll" class="dark:border-white-400/20 dark:scale-100 transition-all duration-500 ease-in-out dark:hover:scale-110 dark:checked:scale-100 w-6 h-6" type="checkbox">
                         <label class="ml-2">Chọn tất cả</label>  
@@ -139,11 +209,17 @@
       function data_retrieval(){
         let query = $('#query_data').val().toString('utf-8');
         let k = $('#retrieval_result_quantity').val()
+        let model = $('#model_for_query').find(":selected").val();
+        console.log(model)
         // console.log(query, k)
         $.ajax({
                 type : 'POST',
                 url : "/video_retrieval",
-                data: {"query":query, 'k': k},
+                data: {
+                  "query":query, 
+                  'k': k,
+                  "model": model
+                },
                 success: function(data, textStatus, jqXHR){
                   console.log(data)
                   receive_data = {}
@@ -174,7 +250,7 @@
                           <div draggable="true" class="result mb-8 flex lg:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
                           <img draggable="false" alt="team" 
                           class="w-3/4 flex-shrink-0 rounded-lg max-w-128 max-h-72 object-cover object-center sm:mb-0 mb-4" 
-                          src="data:image/png;base64,${element.Image}"
+                          src="${element.Image}"
                           onclick="openNav('${element.Youtube_id}', '${Math.round(+(element.Frame_id)/ 25 )}')">
                           <div draggable="false" class="flex-grow sm:pl-8 sm:w-full w-1/4">
                             <h2 class="title-font font-medium text-gray-900 mb-3">ID: ${element.ID}</h2>
@@ -217,6 +293,35 @@ function init() {
       $("#checkAll").click(function(){
         $("#display_result").find("input:checkbox").prop('checked', this.checked);
 });
+    </script>
+    <script>
+      // $('#input_queries_by_folder').change(function(e){
+      //   console.log(e)
+      // })
+        $('#input_queries_by_folder').on('change', async function(e) {
+          html_li_str = ""
+          for (file of this.files){
+            var text_content = await file.text()
+            html_li_str += "<li class='hover:bg-gray-300 m-4 cursor-pointer' onclick='get_query(this)'>"+text_content+"</li>"
+          }
+          $('#input_type').html('<textarea id="query_data" class="hidden"></textarea><ul id="list_of_queries" class="list-disc list-inside max-h-64 w-full overflow-y-scroll">'+html_li_str+'</ul>');
+          $('#input_query_by_keyboard').toggleClass('hidden')
+          $('#input_queries_by_folder_btn').toggleClass('hidden')
+        })
+        function get_query(e) {
+          $("#list_of_queries li").removeClass("bg-green-300");
+          $(e).addClass("bg-green-300")
+          $('#query_data').val($(e).text())
+        }
+        $('#input_query_by_keyboard').on('click', function(){
+          $('#input_type').html(`
+              <label for="query_data" class="leading-7 text-sm text-gray-600">Câu truy vấn</label>
+              <textarea id="query_data" name="query_data" class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>  
+          `)
+          $('#input_query_by_keyboard').toggleClass('hidden')
+          $('#input_queries_by_folder').val(null)
+          $('#input_queries_by_folder_btn').toggleClass('hidden')
+        })
     </script>
 
 </html>
