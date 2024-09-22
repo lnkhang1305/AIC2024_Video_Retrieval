@@ -221,8 +221,9 @@
                   "model": model
                 },
                 success: function(data, textStatus, jqXHR){
+                  localStorage.clear();
                   console.log(data)
-                  receive_data = {}
+                  
                   for (key of data) {
                     parse_json = JSON.parse(key)
                     receive_data[parse_json.ID] = {
@@ -234,9 +235,6 @@
                       Youtube_id: parse_json.Youtube_id
                     };
                   }
-                  console.log(receive_data)
-                  localStorage.setItem("retrieval_data", JSON.stringify(receive_data));
-                  // console.log(localStorage.getItem("retrieval_data"))
                   $('#display_result').empty();
                     data.forEach(ele => {
                       element = JSON.parse(ele)
@@ -263,7 +261,8 @@
                       </li>
                       `)
                     });
-                    // $("#abcd").attr("src","data:image/png;base64,"+data)
+                    console.log(receive_data)
+                    receive_data = JSON.stringify(receive_data)
                 }
                 });
               }
@@ -271,7 +270,7 @@
     <script>
       function download_csv(){
         data_to_csv = []
-        data_lst = JSON.parse(localStorage.getItem("retrieval_data"))
+        data_lst = JSON.parse(receive_data = {})
         $("#display_result").find("input:checkbox:checked").each(function(){
           data_to_csv.push(data_lst[$(this).parent().parent().attr('id')])
         })
@@ -281,6 +280,7 @@
       }
     </script>
     <script>
+      let receive_data = {}
       $( init );
 function init() {
   $( ".droppable-area1" ).sortable({
