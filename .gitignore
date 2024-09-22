@@ -166,7 +166,9 @@ CLIPv2_features/
 keyframes
 media-info
 map-keyframes
-
+index_b32.ivf
+index_b16.ivf
+index_l14.ivf
 
 index_l14.ivf
 index_b16.ivf

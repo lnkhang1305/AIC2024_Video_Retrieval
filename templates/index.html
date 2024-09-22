@@ -251,12 +251,12 @@
                           <img draggable="false" alt="team" 
                           class="w-3/4 flex-shrink-0 rounded-lg max-w-128 max-h-72 object-cover object-center sm:mb-0 mb-4" 
                           src="${element.Image}"
-                          onclick="openNav('${element.Youtube_id}', '${Math.round(+(element.Frame_id)/ 25 )}')">
+                          onclick="openNav('${element.Youtube_id}', '${Math.round(+(element.Frame_id)/ element.FPS )}')">
                           <div draggable="false" class="flex-grow sm:pl-8 sm:w-full w-1/4">
                             <h2 class="title-font font-medium text-gray-900 mb-3">ID: ${element.ID}</h2>
                             <h3 class="title-font font-medium text-gray-600 mb-3">Frame ID: ${element.Frame_id}</h3>
                             <h3 class="title-font font-medium text-gray-600 mb-3">Video info : ${element.Video_info}</h3>    
-                            <h3 class="title-font font-medium text-gray-600 mb-3">Thời điểm của frame : ${Math.floor(+(element.Frame_id)/ 25 / 60 )}:${Math.floor(+(element.Frame_id)/ 25 % 60)}</h3>           
+                            <h3 class="title-font font-medium text-gray-600 mb-3">Thời điểm của frame : ${Math.floor(+(element.Frame_id)/ element.FPS / 60 )}:${Math.floor(+(element.Frame_id)/ element.FPS % 60)}</h3>           
                           </div>
                         </div>
                         </div>
