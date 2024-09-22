@@ -12,6 +12,7 @@ from deep_translator import GoogleTranslator
 import csv
 import os
 import re
+import pandas as pd
 
 # ADJUST PARAMETER AND MODEL--------------#
 CLIP_MODEL = "ViT-L/14@336px"  # ViT-B/16  #
@@ -95,6 +96,13 @@ def get_youtube_video_id_by_url(url):
         return ""
 
 
+def get_fps_by_video_id(video: str="Lxx_Vxxx"):
+    path_to_map_key_frames = "map-keyframes"
+    csv_path = os.path.join(path_to_map_key_frames, video + ".csv")
+    reader = pd.read_csv(csv_path, header=0)
+    return int(reader.iloc[0, 2])
+        
+
 def search_images_from_query(query_text, k, model, index, client, collection):
     path_to_media_info_folder = "media-info" if os.path.exists(
         "media-info") else r"D:\AI_chalenge_2024\AI_Challenge\db\media-info-b1\media-info"
@@ -122,6 +130,7 @@ def search_images_from_query(query_text, k, model, index, client, collection):
         #     data['Image'] = base64.b64encode(image_file.read()).decode("utf-8")
         data['Video'] = result.payload['video']
         data['Frame_id'] = result.payload['frame_idx']
+        data['FPS'] = get_fps_by_video_id(data['Video'])
         return_result.append(json.dumps(data))
     return return_result
 
