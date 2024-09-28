@@ -126,14 +126,14 @@
                     <div class="relative mb-4">
                             <label for="price-range" class="leading-7 text-sm text-gray-600">Số lượng kết quả truy vấn</label>
                             <div class="w-full flex">
-                              <div class="w-3/5 mr-4">
+                              <!-- <div class="w-3/5 mr-4">
                                   <input type="range" id="quantity-range" class="w-full mr-4 accent-indigo-600" min="5" max="100" value="10" oninput="update_quantity(this.value)">
                                   <div class="flex justify-between text-gray-500">
                                     <span id="min_quantity">10</span>
                                     <span id="max_quantity">100</span>
                                   </div>
-                              </div>
-                              <div class="flex w-1/5 h-8 justify-center">
+                              </div> -->
+                              <div class="flex w-4/5 h-8 justify-left">
                                 <p class="content-center">Số lượng: </p>
                                 <input type="text" id="retrieval_result_quantity" class="w-2/5 input input-bordered content-center ml-2 border-b-2 border-black" value="10" onchange="update_quantity(this.value)"/>
                               </div>
@@ -210,7 +210,7 @@
         let query = $('#query_data').val().toString('utf-8');
         let k = $('#retrieval_result_quantity').val()
         let model = $('#model_for_query').find(":selected").val();
-        console.log(model)
+        console.log(k)
         // console.log(query, k)
         $.ajax({
                 type : 'POST',
@@ -248,13 +248,13 @@
                           <div draggable="true" class="result mb-8 flex lg:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
                           <img draggable="false" alt="team" 
                           class="w-3/4 flex-shrink-0 rounded-lg max-w-128 max-h-72 object-cover object-center sm:mb-0 mb-4" 
-                          src="data:image/png;base64,${element.Image}"
-                          onclick="openNav('${element.Youtube_id}', '${Math.round(+(element.Frame_id)/ 25 )}')">
+                          src="${element.Image}"
+                          onclick="openNav('${element.Youtube_id}', '${Math.round(+(element.Frame_id)/ element.FPS )}')">
                           <div draggable="false" class="flex-grow sm:pl-8 sm:w-full w-1/4">
                             <h2 class="title-font font-medium text-gray-900 mb-3">ID: ${element.ID}</h2>
                             <h3 class="title-font font-medium text-gray-600 mb-3">Frame ID: ${element.Frame_id}</h3>
                             <h3 class="title-font font-medium text-gray-600 mb-3">Video info : ${element.Video_info}</h3>    
-                            <h3 class="title-font font-medium text-gray-600 mb-3">Thời điểm của frame : ${Math.floor(+(element.Frame_id)/ 25 / 60 )}:${Math.floor(+(element.Frame_id)/ 25 % 60)}</h3>           
+                            <h3 class="title-font font-medium text-gray-600 mb-3">Thời điểm của frame : ${Math.floor(+(element.Frame_id)/ element.FPS / 60 )}:${Math.floor(+(element.Frame_id)/ element.FPS % 60)}</h3>           
                           </div>
                         </div>
                         </div>
