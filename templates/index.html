@@ -190,7 +190,7 @@
     <script>
         function update_quantity(value) {
           document.getElementById("retrieval_result_quantity").value = value;
-          document.getElementById("quantity-range").value = value;
+          // document.getElementById("quantity-range").value = value;
         }
         function openNav(youtube_id, time) {
           $('#youtube_video').attr("src", "https://www.youtube.com/embed/"+youtube_id+"?start="+time)
@@ -275,7 +275,7 @@
           data_to_csv.push(data_lst[$(this).parent().parent().attr('id')])
         })
         column_to_get = ['Video_info', 'Frame_id']
-        exportJSONToCSV(data_to_csv, column_to_get)
+        exportJSONToCSV(data_to_csv, column_to_get,200)
         // console.log(JSON.parse(localStorage.getItem("retrieval_data")))
       }
     </script>
