@@ -12,6 +12,7 @@ from deep_translator import GoogleTranslator
 import csv
 import os
 import re
+import pandas as pd
 
 # ADJUST PARAMETER AND MODEL--------------#
 CLIP_MODEL = "ViT-L/14@336px"  # ViT-B/16  #
@@ -29,13 +30,16 @@ def init_model():
     else:
         model_l14, preprocess = clip.load("ViT-L/14@336px", device=device)
         model_b16, preprocess = clip.load("ViT-B/16", device=device)
-        model_b32, preprocess = clip.load("ViT-B-32", device=device)
-    index = faiss.read_index('index.ivf')
+        model_b32, preprocess = clip.load("ViT-B/32", device=device)
+    index_l14 = faiss.read_index('index_l14.ivf')
+    index_b16 = faiss.read_index('index_b16.ivf')
+    index_b32 = faiss.read_index('index_b32.ivf')
+
     client = QdrantClient(url="http://localhost:6333")
-    return model_l14, model_b16, model_b32, index, client
+    return model_l14, model_b16, model_b32, index_l14, index_b16, index_b32, client
 
 
-def search_images_with_text(query_text, device, model, index, client):
+def search_images_with_text(query_text, device, model, index, client): # RIGGED
     cur_folder = os.getcwd()
     # with torch.no_grad():
     #     text_vector = model.encode_text(open_clip.tokenize([query_text])).cpu().numpy().flatten()
@@ -92,6 +96,13 @@ def get_youtube_video_id_by_url(url):
         return ""
 
 
+def get_fps_by_video_id(video: str="Lxx_Vxxx"):
+    path_to_map_key_frames = "map-keyframes"
+    csv_path = os.path.join(path_to_map_key_frames, video + ".csv")
+    reader = pd.read_csv(csv_path, header=0)
+    return int(reader.iloc[0, 2])
+        
+
 def search_images_from_query(query_text, k, model, index, client, collection):
     path_to_media_info_folder = "media-info" if os.path.exists(
         "media-info") else r"D:\AI_chalenge_2024\AI_Challenge\db\media-info-b1\media-info"
@@ -106,7 +117,6 @@ def search_images_from_query(query_text, k, model, index, client, collection):
         collection_name=collection, ids=result_ids)
     return_result = []
     pattern = r'L\d{2}_V\d{3}'
-    progress = 0
     for result in results:
         data = {}
         data['ID'] = result.id
@@ -115,14 +125,13 @@ def search_images_from_query(query_text, k, model, index, client, collection):
         with open(os.path.join(path_to_media_info_folder, data['Video_info']+".json"), 'r', encoding='utf-8') as media_json_file:
             data['Youtube_id'] = get_youtube_video_id_by_url(
                 json.load(media_json_file)['watch_url'])
-        image_path = result.payload['image_path'] if os.path.exists(result.payload['image_path']) else result.payload['image_path'].replace('./','D:/AI_chalenge_2024/AI_Challenge/db/dot2/')
-        with open(image_path, "rb") as image_file:
-            data['Image'] = base64.b64encode(image_file.read()).decode("utf-8")
+        data['Image'] = 'http://127.0.0.1:5002' + result.payload['image_path'][1:]
+        # with open(result.payload['image_path'], "rb") as image_file:
+        #     data['Image'] = base64.b64encode(image_file.read()).decode("utf-8")
         data['Video'] = result.payload['video']
         data['Frame_id'] = result.payload['frame_idx']
+        data['FPS'] = get_fps_by_video_id(data['Video'])
         return_result.append(json.dumps(data))
-        progress = progress + 1
-        print("Progess: ", progress, '/', k)
     return return_result
 
 
